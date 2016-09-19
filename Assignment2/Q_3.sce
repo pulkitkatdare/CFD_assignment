@@ -56,7 +56,15 @@ while (unsteadiness_nd >= epsilon_st)
     end
     for i = 2:imax-1
         for j = 2:jmax-1
-            T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*(h_x(i-1,j)-h_x(i,j)+(k/dx)*dy*(T(i-1,j)+T(i+1,j)+T(i,j+1)+T(i,j-1)-4*T(i,j)))
+            //FOU
+            //T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*(h_x(i-1,j)-h_x(i,j)+(k/dx)*dy*(T(i-1,j)+T(i+1,j)+T(i,j+1)+T(i,j-1)-4*T(i,j)))
+            //QUICK
+            if (i~=2)
+                T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*(0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j)-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j))+(k/dx)*dy*(T(i-1,j)+T(i+1,j)+T(i,j+1)+T(i,j-1)-4*T(i,j)))
+            else
+               T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*(h_x(i-1,j)-h_x(i,j)+(k/dx)*dy*(T(i-1,j)+T(i+1,j)+T(i,j+1)+T(i,j-1)-4*T(i,j))) 
+            end
+
         end
     end
     T(imax,:) = T(imax-1,:)
