@@ -24,41 +24,31 @@ T(1,:) = 100;
 unsteadiness_nd = 1;
 N = 0;
 while(unsteadiness_nd >= epsilon_st)
-   N = N+1;
-   T_old = T;
-   for i = 1:imax
-       for j = 1:jmax
-       h_x(i,j) = T(i,j)*cp*rho*u*dy;
-       h_y(i,j) = T(i,j)*cp*rho*v*dx;
-       end
-   end
-   for i = 2:imax
+    N = N+1;
+    T_old = T;
+    for i = 1:imax
+        for j = 1:jmax
+            h_x(i,j) = T(i,j)*cp*rho*u*dy;
+            h_y(i,j) = T(i,j)*cp*rho*v*dx;
+        end
+    end
+    for i = 2:imax
        for j = 2:imax
-           if (i == 2 & j ~=2 & j ~= imax)    
-             T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-1,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))  
+           if (i == 2 & j ~=2)    
+             T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((1.5*h_x(i-1,j)-0.5*h_x(i-1,j))-(1.5*h_x(i,j)-0.5*h_x(i-1,j)) + (1.5*h_y(i,j-1)-0.5*h_y(i,j-2)) - (1.5*h_y(i,j)-0.5*h_y(i,j-1)))  
            //T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*(h_x(i-1,j)-h_x(i,j) + h_y(i,j-1) - h_y(i,j))//FOU
-       elseif (i == 2 & j ==2)
-           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-1,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-1)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
-       elseif (i==2 & j==jmax)
-           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-1,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
-       elseif (i==imax & j~=2 & j~=jmax)
-           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
-       elseif (j==2 & i~= imax & i~= 2) 
-           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-1)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
-       elseif (j==2 & i==imax)
-           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-1)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
-       elseif (j==jmax & i~=2 & i~=imax)
-           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
-       elseif (i==imax & j==jmax)
-           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
-       else
-           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+       elseif (j == 2 & i ~=2)
+           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((1.5*h_x(i-1,j)-0.5*h_x(i-2,j))-(1.5*h_x(i,j)-0.5*h_x(i-1,j)) + (1.5*h_y(i,j-1)-0.5*h_y(i,j-1)) - (1.5*h_y(i,j)-0.5*h_y(i,j-1)))
+       elseif (i==2 & j==2)
+           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((1.5*h_x(i-1,j)-0.5*h_x(i-1,j))-(1.5*h_x(i,j)-0.5*h_x(i-1,j)) + (1.5*h_y(i,j-1)-0.5*h_y(i,j-1)) - (1.5*h_y(i,j)-0.5*h_y(i,j-1)))
+       else 
+           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((1.5*h_x(i-1,j)-0.5*h_x(i-2,j))-(1.5*h_x(i,j)-0.5*h_x(i-1,j)) + (1.5*h_y(i,j-1)-0.5*h_y(i,j-2)) - (1.5*h_y(i,j)-0.5*h_y(i,j-1)))
            end
        end
    end
-   unsteadiness=max(abs(T-T_old))/DTc;
-   unsteadiness_nd = unsteadiness*(L/(u*Dt));    
-   printf("Time step no. %5d, Unsteadiness_nd = %8.4e\n", N , unsteadiness_nd); 
+    unsteadiness=max(abs(T-T_old))/DTc;
+    unsteadiness_nd = unsteadiness*(L/(u*Dt));    
+    printf("Time step no. %5d, Unsteadiness_nd = %8.4e\n", N , unsteadiness_nd); 
 end
 xset("colormap", jetcolormap(64)),colorbar(0,100),Sgrayplot(linspace(0,L,imax),linspace(0,L,jmax),T, strf='100')
 // SOU
@@ -80,4 +70,41 @@ xset("colormap", jetcolormap(64)),colorbar(0,100),Sgrayplot(linspace(0,L,imax),l
 //   unsteadiness_nd = unsteadiness*(L/(u*Dt));    
 //   printf("Time step no. %5d, Unsteadiness_nd = %8.4e\n", N , unsteadiness_nd); 
 //end
-
+//QUICK
+//while(unsteadiness_nd >= epsilon_st)
+//   N = N+1;
+//   T_old = T;
+//   for i = 1:imax
+//       for j = 1:jmax
+//       h_x(i,j) = T(i,j)*cp*rho*u*dy;
+//       h_y(i,j) = T(i,j)*cp*rho*v*dx;
+//       end
+//   end
+//   for i = 2:imax
+//       for j = 2:imax
+//           if (i == 2 & j ~=2 & j ~= imax)    
+//             T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-1,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))  
+//           //T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*(h_x(i-1,j)-h_x(i,j) + h_y(i,j-1) - h_y(i,j))//FOU
+//       elseif (i == 2 & j ==2)
+//           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-1,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-1)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+//       elseif (i==2 & j==jmax)
+//           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-1,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+//       elseif (i==imax & j~=2 & j~=jmax)
+//           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+//       elseif (j==2 & i~= imax & i~= 2) 
+//           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-1)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+//       elseif (j==2 & i==imax)
+//           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-1)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+//       elseif (j==jmax & i~=2 & i~=imax)
+//           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+//       elseif (i==imax & j==jmax)
+//           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+//       else
+//           T(i,j) = T_old(i,j) + (Dt/(rho*cp*dx*dy))*((0.375*h_x(i,j)+0.75*h_x(i-1,j)-0.125*h_x(i-2,j))-(0.375*h_x(i+1,j)+0.75*h_x(i,j)-0.125*h_x(i-1,j)) + (0.375*h_y(i,j)+0.75*h_y(i,j-1)-0.125*h_y(i,j-2)) - (0.375*h_y(i,j+1)+0.75*h_y(i,j)-0.125*h_y(i,j-1)))
+//           end
+//       end
+//   end
+//   unsteadiness=max(abs(T-T_old))/DTc;
+//   unsteadiness_nd = unsteadiness*(L/(u*Dt));    
+//   printf("Time step no. %5d, Unsteadiness_nd = %8.4e\n", N , unsteadiness_nd); 
+//end
